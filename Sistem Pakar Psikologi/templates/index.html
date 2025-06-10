@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Skrining Depresi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 50%, #e6f3ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle background patterns for mental wellness */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 200, 150, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(100, 180, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(150, 220, 180, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.08),
+                0 8px 32px rgba(100, 180, 255, 0.12);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Mental health themed header decoration */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                #4CAF50 0%, 
+                #81C784 25%, 
+                #64B5F6 50%, 
+                #90CAF9 75%, 
+                #A5D6A7 100%);
+        }
+
+        /* Floating wellness icons */
+        .container::after {
+            content: '🌱 💚 🌿 ☀️ 🦋';
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            animation: gentleFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        h1 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(46, 125, 50, 0.1);
+        }
+
+        .subtitle {
+            color: #4A6741;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .description {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            border: 2px solid rgba(139, 195, 74, 0.2);
+            position: relative;
+        }
+
+        .description::before {
+            content: '🌿';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .description h3 {
+            color: #2E7D32;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .description ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .description li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(139, 195, 74, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2E7D32;
+            font-weight: 500;
+        }
+
+        .description li:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%);
+            box-shadow: 0 4px 15px rgba(66, 165, 245, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #26A69A 0%, #4DB6AC 100%);
+            box-shadow: 0 4px 15px rgba(38, 166, 154, 0.3);
+        }
+
+        .btn-info:hover {
+            box-shadow: 0 8px 25px rgba(38, 166, 154, 0.4);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            color: #E65100;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .warning::before {
+            content: '💛';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .warning strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #BF360C;
+        }
+
+        /* Question Page Styles */
+        .question-container {
+            text-align: left;
+        }
+
+        .progress-bar {
+            background: rgba(139, 195, 74, 0.2);
+            border-radius: 12px;
+            height: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '🌱';
+            position: absolute;
+            right: 8px;
+            top: -8px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #81C784, #A5D6A7);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShimmer 2s infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(139, 195, 74, 0.2);
+            position: relative;
+        }
+
+        .question-box::before {
+            content: '🤔';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #2E7D32;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .answer-btn {
+            padding: 18px 45px;
+            border: 3px solid transparent;
+            background: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .answer-btn:hover::before {
+            left: 100%;
+        }
+
+        .answer-btn.yes {
+            border-color: #FF6B6B;
+            color: #D32F2F;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        }
+
+        .answer-btn.yes:hover {
+            background: linear-gradient(135deg, #FF6B6B 0%, #F44336 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .answer-btn.no {
+            border-color: #4CAF50;
+            color: #2E7D32;
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        }
+
+        .answer-btn.no:hover {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Result Page Styles */
+        .result-container {
+            text-align: center;
+        }
+
+        .result-score {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(139, 195, 74, 0.2);
+            position: relative;
+        }
+
+        .result-score::before {
+            content: '📊';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .score-display {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+            position: relative;
+        }
+
+        .risk-level {
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .risk-minimal { 
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); 
+            color: #2E7D32; 
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+        .risk-ringan { 
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); 
+            color: #E65100; 
+            border: 2px solid rgba(255, 193, 7, 0.3);
+        }
+        .risk-sedang { 
+            background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%); 
+            color: #BF360C; 
+            border: 2px solid rgba(255, 152, 0, 0.3);
+        }
+        .risk-berat { 
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); 
+            color: #C62828; 
+            border: 2px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .recommendations {
+            text-align: left;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 28px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(33, 150, 243, 0.2);
+            position: relative;
+        }
+
+        .recommendations::before {
+            content: '💡';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .recommendations h3 {
+            color: #1565C0;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            color: #1565C0;
+            font-weight: 500;
+        }
+
+        .recommendations li:last-child {
+            border-bottom: none;
+        }
+
+        .symptoms {
+            text-align: left;
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 28px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(156, 39, 176, 0.2);
+            position: relative;
+        }
+
+        .symptoms::before {
+            content: '🔍';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .symptoms h3 {
+            color: #7B1FA2;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .emergency-warning {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 3px solid rgba(244, 67, 54, 0.4);
+            color: #C62828;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+            animation: urgentPulse 2s infinite;
+        }
+
+        .emergency-warning::before {
+            content: '🚨';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            animation: urgentBlink 1s infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3); }
+            50% { box-shadow: 0 8px 30px rgba(244, 67, 54, 0.5); }
+        }
+
+        @keyframes urgentBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .emergency-warning h3 {
+            color: #B71C1C;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        /* History Page Styles */
+        .history-item {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            border: 2px solid rgba(139, 195, 74, 0.2);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 195, 74, 0.2);
+        }
+
+        .history-item::before {
+            content: '📅';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .history-date {
+            color: #4A6741;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .history-score {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+
+        /* About Page Styles */
+        .about-content {
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .about-content h3 {
+            color: #2E7D32;
+            margin: 25px 0 12px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-content h3::before {
+            content: '🌿';
+            font-size: 1.2rem;
+        }
+
+        .about-content p {
+            margin-bottom: 18px;
+            color: #4A6741;
+            font-weight: 500;
+        }
+
+        .about-content ul {
+            margin-bottom: 18px;
+            padding-left: 20px;
+        }
+
+        .about-content li {
+            color: #4A6741;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                margin: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .answer-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .answer-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .score-display {
+                font-size: 3.5em;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for better accessibility */
+        .btn:focus, .answer-btn:focus {
+            outline: 3px solid rgba(76, 175, 80, 0.6);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="home-page" class="page">
+        <div class="container">
+            <h1>🧠 Sistem Pakar Skrining Depresi</h1>
+            <p class="subtitle">Alat bantu untuk mengenali gejala depresi secara dini</p>
+            
+            <div class="description">
+                <h3>📋 Tentang Skrining Ini:</h3>
+                <ul>
+                    <li>✅ 15 pertanyaan berdasarkan kriteria medis</li>
+                    <li>⏱️ Membutuhkan waktu sekitar 5-10 menit</li>
+                    <li>🔍 Menganalisis tingkat risiko depresi</li>
+                    <li>💡 Memberikan rekomendasi tindak lanjut</li>
+                    <li>📊 Menyimpan riwayat hasil skrining</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Penting untuk Diketahui:</strong>
+                Hasil skrining ini bukanlah diagnosis medis. Untuk diagnosis yang akurat, konsultasikan dengan profesional kesehatan mental yang berkualifikasi.
+            </div>
+
+            <div class="navigation">
+                <button class="btn" onclick="startTest()">🚀 Mulai Skrining</button>
+                <button class="btn btn-secondary" onclick="showHistory()">📈 Riwayat Hasil</button>
+                <button class="btn btn-info" onclick="showAbout()">ℹ️ Tentang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Page -->
+    <div id="question-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-box">
+                    <div class="question-text" id="question-text"></div>
+                    <div id="question-number" style="color: #666; font-size: 0.9em; margin-bottom: 20px;"></div>
+                </div>
+                
+                <div class="answer-buttons">
+                    <button class="answer-btn yes" onclick="answerQuestion(true)">Ya</button>
+                    <button class="answer-btn no" onclick="answerQuestion(false)">Tidak</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Page -->
+    <div id="result-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="result-container">
+                <h1>📊 Hasil Skrining Depresi</h1>
+                
+                <div class="result-score">
+                    <div class="score-display" id="score-display"></div>
+                    <div class="risk-level" id="risk-level"></div>
+                    <p>Skor: <span id="detailed-score"></span></p>
+                </div>
+
+                <div id="emergency-warning" class="emergency-warning" style="display: none;">
+                    <h3>🚨 PERINGATAN PENTING</h3>
+                    <p>Anda menunjukkan tanda-tanda pikiran untuk menyakiti diri sendiri. Segera hubungi:</p>
+                    <ul>
+                        <li>🏥 Rumah sakit terdekat</li>
+                        <li>📞 Hotline Crisis: 119 ext 8</li>
+                        <li>👨‍⚕️ Profesional kesehatan mental</li>
+                        <li>👨‍👩‍👧‍👦 Keluarga atau teman terdekat</li>
+                    </ul>
+                </div>
+
+                <div class="recommendations" id="recommendations">
+                    <h3>💡 Rekomendasi:</h3>
+                    <ul id="recommendation-list"></ul>
+                </div>
+
+                <div class="symptoms" id="symptoms">
+                    <h3>🔍 Gejala Dominan:</h3>
+                    <ul id="symptom-list"></ul>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn" onclick="saveResult()">💾 Simpan Hasil</button>
+                    <button class="btn btn-secondary" onclick="showHome()">🏠 Kembali</button>
+                    <button class="btn btn-info" onclick="startTest()">🔄 Tes Ulang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Page -->
+    <div id="history-page" class="page" style="display: none;">
+        <div class="container">
+            <h1>📈 Riwayat Hasil Skrining</h1>
+            
+            <div id="history-content">
+                <p style="text-align: center; color: #666; margin: 40px 0;">
+                    Belum ada riwayat skrining yang tersimpan.
+                </p>
+            </div>
+
+            <div class="navigation">
+                <button class="btn" onclick="showHome()">🏠 Kembali</button>
+                <button class="btn btn-secondary" onclick="startTest()">🚀 Mulai Skrining</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about-page" class="page" style="display: none;">
+        <div class="container">
+            <h1>ℹ️ Tentang Sistem Pakar Depresi</h1>
+            
+            <div class="about-content">
+                <h3>🎯 Tujuan</h3>
+                <p>Sistem ini dirancang untuk membantu mengenali gejala-gejala depresi secara dini melalui serangkaian pertanyaan yang berdasarkan kriteria diagnostik medis.</p>
+
+                <h3>📋 Metodologi</h3>
+                <p>Skrining ini menggunakan 15 pertanyaan yang mencakup gejala-gejala utama depresi berdasarkan DSM-5 (Diagnostic and Statistical Manual of Mental Disorders), termasuk:</p>
+                <ul>
+                    <li>Perasaan sedih atau murung berkepanjangan</li>
+                    <li>Kehilangan minat pada aktivitas</li>
+                    <li>Gangguan tidur dan nafsu makan</li>
+                    <li>Kelelahan dan kehilangan energi</li>
+                    <li>Perasaan tidak berharga atau bersalah</li>
+                    <li>Kesulitan konsentrasi</li>
+                    <li>Pikiran tentang kematian atau bunuh diri</li>
+                </ul>
+
+                <h3>⚖️ Sistem Penilaian</h3>
+                <p>Setiap pertanyaan memiliki bobot yang berbeda berdasarkan tingkat kepentingan klinis. Hasil skrining diklasifikasikan menjadi:</p>
+                <ul>
+                    <li><strong>Minimal (0-14%):</strong> Risiko sangat rendah</li>
+                    <li><strong>Ringan (15-29%):</strong> Risiko rendah</li>
+                    <li><strong>Ringan-Sedang (30-49%):</strong> Risiko menengah</li>
+                    <li><strong>Sedang-Berat (50-69%):</strong> Risiko tinggi</li>
+                    <li><strong>Berat (≥70%):</strong> Risiko sangat tinggi</li>
+                </ul>
+
+                <h3>⚠️ Batasan</h3>
+                <p>Penting untuk diingat bahwa:</p>
+                <ul>
+                    <li>Ini adalah alat skrining, bukan diagnosis medis</li>
+                    <li>Hasil harus diinterpretasi oleh profesional kesehatan mental</li>
+                    <li>Kondisi medis lain dapat menyebabkan gejala serupa</li>
+                    <li>Segera cari bantuan profesional jika mengalami pikiran menyakiti diri</li>
+                </ul>
+
+                <h3>📞 Bantuan Darurat</h3>
+                <p>Jika Anda atau seseorang yang Anda kenal mengalami krisis mental:</p>
+                <ul>
+                    <li>Hotline Crisis: 119 ext 8</li>
+                    <li>Rumah sakit terdekat</li>
+                    <li>Psikiater atau psikolog</li>
+                </ul>
+            </div>
+
+            <div class="navigation">
+                <button class="btn" onclick="showHome()">🏠 Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data sistem pakar
+        const questions = [
+            "Apakah Anda merasa sedih atau murung hampir setiap hari?",
+            "Apakah Anda kehilangan minat pada aktivitas yang biasanya Anda nikmati?",
+            "Apakah Anda mengalami perubahan berat badan yang signifikan (naik/turun > 5kg)?",
+            "Apakah Anda mengalami gangguan tidur (insomnia atau tidur berlebihan)?",
+            "Apakah Anda merasa lelah atau kehilangan energi hampir setiap hari?",
+            "Apakah Anda merasa tidak berharga atau bersalah berlebihan?",
+            "Apakah Anda sulit berkonsentrasi atau membuat keputusan?",
+            "Apakah Anda pernah berpikir tentang kematian atau bunuh diri?",
+            "Apakah Anda merasa gelisah atau justru bergerak sangat lambat?",
+            "Apakah Anda mengalami gejala fisik tanpa penyebab medis yang jelas?",
+            "Apakah Anda menarik diri dari keluarga dan teman-teman?",
+            "Apakah Anda mengalami penurunan produktivitas di kerja/sekolah?",
+            "Apakah Anda merasa putus asa tentang masa depan?",
+            "Apakah Anda mengalami perubahan nafsu makan yang drastis?",
+            "Apakah gejala-gejala ini berlangsung lebih dari 2 minggu?"
+        ];
+
+        const weights = [3, 3, 2, 2, 2, 3, 2, 4, 2, 1, 2, 2, 3, 1, 2];
+        
+        let currentQuestion = 0;
+        let answers = [];
+        let testResults = [];
+
+        // Navigation functions
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        function showHome() {
+            showPage('home-page');
+        }
+
+        function showHistory() {
+            showPage('history-page');
+            displayHistory();
+        }
+
+        function showAbout() {
+            showPage('about-page');
+        }
+
+        function startTest() {
+            currentQuestion = 0;
+            answers = [];
+            showPage('question-page');
+            displayQuestion();
+        }
+
+        // Question functions
+        function displayQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+
+            document.getElementById('question-text').textContent = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `Pertanyaan ${currentQuestion + 1} dari ${questions.length}`;
+            
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function answerQuestion(answer) {
+            answers.push(answer);
+            currentQuestion++;
+            displayQuestion();
+        }
+
+        // Results functions
+        function calculateResults() {
+            let totalScore = 0;
+            let maxScore = weights.reduce((a, b) => a + b, 0);
+
+            for (let i = 0; i < answers.length; i++) {
+                if (answers[i]) {
+                    totalScore += weights[i];
+                }
+            }
+
+            const percentage = (totalScore / maxScore) * 100;
+            
+            let level, risk;
+            if (percentage >= 70) {
+                level = "BERAT";
+                risk = "Sangat Tinggi";
+            } else if (percentage >= 50) {
+                level = "SEDANG-BERAT";
+                risk = "Tinggi";
+            } else if (percentage >= 30) {
+                level = "RINGAN-SEDANG";
+                risk = "Menengah";
+            } else if (percentage >= 15) {
+                level = "RINGAN";
+                risk = "Rendah";
+            } else {
+                level = "MINIMAL";
+                risk = "Sangat Rendah";
+            }
+
+            return {
+                percentage: Math.round(percentage * 10) / 10,
+                totalScore,
+                maxScore,
+                level,
+                risk,
+                suicidalThoughts: answers[7] // Question 8 about suicidal thoughts
+            };
+        }
+
+        function getRecommendations(level) {
+            const recommendations = {
+                "MINIMAL": [
+                    "✓ Pertahankan pola hidup sehat",
+                    "✓ Lakukan aktivitas yang menyenangkan",
+                    "✓ Jaga hubungan sosial yang positif",
+                    "✓ Olahraga teratur dan tidur cukup"
+                ],
+                "RINGAN": [
+                    "• Tingkatkan aktivitas fisik dan sosial",
+                    "• Praktikkan teknik relaksasi atau meditasi",
+                    "• Pertimbangkan konseling atau terapi ringan",
+                    "• Monitor perkembangan gejala"
+                ],
+                "RINGAN-SEDANG": [
+                    "⚠ Disarankan berkonsultasi dengan psikolog",
+                    "⚠ Pertimbangkan terapi kognitif-perilaku",
+                    "⚠ Jaga pola makan dan tidur teratur",
+                    "⚠ Hindari alkohol dan substansi lain"
+                ],
+                "SEDANG-BERAT": [
+                    "🚨 SANGAT DISARANKAN konsultasi dengan psikiater",
+                    "🚨 Pertimbangkan terapi profesional",
+                    "🚨 Informasikan kondisi kepada keluarga terdekat",
+                    "🚨 Monitor ketat gejala yang memburuk"
+                ],
+                "BERAT": [
+                    "🆘 SEGERA hubungi profesional kesehatan mental",
+                    "🆘 Jangan biarkan diri sendiri sendirian",
+                    "🆘 Hubungi hotline crisis jika diperlukan",
+                    "🆘 Pertimbangkan rawat inap jika diperlukan"
+                ]
+            };
+            return recommendations[level] || [];
+        }
+
+        function getDominantSymptoms() {
+            const symptoms = [];
+            for (let i = 0; i < answers.length; i++) {
+                if (answers[i]) {
+                    symptoms.push({
+                        question: questions[i],
+                        weight: weights[i]
+                    });
+                }
+            }
+            return symptoms.sort((a, b) => b.weight - a.weight).slice(0, 5);
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            const recommendations = getRecommendations(results.level);
+            const symptoms = getDominantSymptoms();
+
+            // Display score
+            document.getElementById('score-display').textContent = results.percentage + '%';
+            document.getElementById('detailed-score').textContent = `${results.totalScore}/${results.maxScore}`;
+            
+            // Display risk level
+            const riskElement = document.getElementById('risk-level');
+            riskElement.textContent = `${results.level} (${results.risk})`;
+            riskElement.className = 'risk-level risk-' + results.level.toLowerCase().replace('-', '');
+
+            // Show emergency warning if suicidal thoughts detected
+            if (results.suicidalThoughts) {
+                document.getElementById('emergency-warning').style.display = 'block';
+            }
+
+            // Display recommendations
+            const recList = document.getElementById('recommendation-list');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recList.appendChild(li);
+            });
+
+            // Display dominant symptoms
+            const sympList = document.getElementById('symptom-list');
+            sympList.innerHTML = '';
+            symptoms.forEach(symptom => {
+                const li = document.createElement('li');
+                li.textContent = `${symptom.question} (Bobot: ${symptom.weight})`;
+                sympList.appendChild(li);
+            });
+
+            // Store results for saving
+            window.currentResults = {
+                timestamp: new Date().toISOString(),
+                percentage: results.percentage,
+                level: results.level,
+                risk: results.risk,
+                totalScore: results.totalScore,
+                maxScore: results.maxScore,
+                answers: answers,
+                symptoms: symptoms
+            };
+
+            showPage('result-page');
+        }
+
+        // Save and history functions
+        function saveResult() {
+            if (!window.currentResults) return;
+
+            let savedResults = JSON.parse(localStorage.getItem('depressionResults') || '[]');
+            savedResults.push(window.currentResults);
+            localStorage.setItem('depressionResults', JSON.stringify(savedResults));
+            
+            alert('Hasil berhasil disimpan!');
+        }
+
+        function displayHistory() {
+            const savedResults = JSON.parse(localStorage.getItem('depressionResults') || '[]');
+            const historyContent = document.getElementById('history-content');
+            
+            if (savedResults.length === 0) {
+                historyContent.innerHTML = '<p style="text-align: center; color: #666; margin: 40px 0;">Belum ada riwayat skrining yang tersimpan.</p>';
+                return;
+            }
+
+            historyContent.innerHTML = '';
+            savedResults.reverse().forEach((result, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(result.timestamp);
+                historyItem.innerHTML = `
+                    <div class="history-date">${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID')}</div>
+                    <div class="history-score">${result.percentage}% - ${result.level}</div>
+                    <div style="color: #666; margin-top: 10px;">Risiko: ${result.risk}</div>
+                    <div style="color: #666;">Skor: ${result.totalScore}/${result.maxScore}</div>
+                `;
+                historyContent.appendChild(historyItem);
+            });
+        }
+
+        // Initialize
+        showHome();
+    </script>
+</body>
+</html>
